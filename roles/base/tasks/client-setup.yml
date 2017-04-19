@@ -1,0 +1,19 @@
+---
+- name: Copy node setup script
+  copy:
+    src: roles/base/files/{{ item }}
+    dest: /tmp
+    owner: root
+    group: root
+    mode: 0700
+  with_items:
+    - client-setup.sh
+
+- name: Run node setup script
+  command: /tmp/client-setup.sh
+
+- name: Restart Icinga2
+  service:
+    name: icinga2
+    state: restarted
+    enabled: yes

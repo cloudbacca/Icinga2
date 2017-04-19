@@ -1,0 +1,9 @@
+---
+- name: set bashrc 
+  lineinfile:
+    path: "{{ item }}"
+    line: 'export PS1=:Centos;\[\e]0;\u@\h \w\a\]\n\[\e[33m\]\u@\h \[\e[33m\]\w\[\e[0m\] \$'
+  with_item:
+    - /root/.bashrc
+    - /home/stack/.bashrc
+    - /home/ec2-user/.bashrc

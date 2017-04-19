@@ -1,0 +1,12 @@
+---
+- name: base 
+  gather_facts: yes
+  hosts:
+  - all 
+  vars:
+    user: prometheus 
+    group: prometheus 
+#  roles:
+#  - base
+  tasks:
+  - include: roles/base/tasks/main.yml

@@ -1,0 +1,56 @@
+---
+- name: Copy PHP-INTL from local server 
+  copy:
+    src: roles/base/files/{{ item }}
+    dest: /tmp
+    owner: root
+    group: root
+    mode: 0640
+  with_items:
+    - php-intl-5.4.16-42.el7.x86_64.rpm 
+
+- name: Copy PHP Configuration file
+  copy:
+    src: roles/base/files/php.ini
+    dest: /etc/php.ini
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install PHP-INTL RP
+  yum:
+    name: /tmp/php-intl-5.4.16-42.el7.x86_64.rpm
+    state: present
+
+- name: Get Epel Repo 
+  get_url:
+    url: http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-9.noarch.rpm
+    dest: /var/tmp/epel-release-7-9.noarch.rpm
+    mode: 0700
+
+- name: Enable Epel Repo
+  yum:
+    name: /var/tmp/epel-release-7-9.noarch.rpm
+    state: present
+
+- name: Install Icinga Packages 
+  command: rpm -i https://packages.icinga.com/epel/7/release/noarch/icinga-rpm-release-7-1.el7.centos.noarch.rpm 
+  ignore_errors: yes
+
+- name: Install Packages
+  yum: name="{{item}}" state=latest
+  with_items:
+       - sysstat 
+       - icinga2
+       - nagios-plugins-all
+       - vim-icinga2
+       - mariadb-server
+       - mariadb 
+       - icinga2-ido-mysql
+       - MySQL-python.x86_64
+       - httpd
+       - icingaweb2
+       - icingacli
+       - php-ldap
+       - php-pdo
+       - php-mysql

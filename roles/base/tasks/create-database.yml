@@ -1,0 +1,40 @@
+---
+- name: Create Icinga Database
+  mysql_db:
+    name: icinga
+    state: present
+
+- name: Set Mysql User Privs
+  mysql_user:
+    user: icinga
+    password: icinga
+    priv: "{{ item }}"
+    state: present
+  with_items:
+    - '*.*:ALL,GRANT' 
+
+### Recieve error; get password prompt, need to solve
+#- name: Import Icinga 2 IDO schema
+#  command: mysql -u root -p icinga < /usr/share/icinga2-ido-mysql/schema/mysql.sql
+
+- name: icinga2 feature enable ido-mysql
+  command: icinga2 feature enable ido-mysql
+
+- name: icinga2 feature enable command
+  command: icinga2 feature enable command
+
+- name: Add icingacmd to www-data group
+  user:
+    name: icingacmd
+    groups: apache 
+    append: yes
+
+- name: Restart Icinga
+  service:
+    name: icinga2
+    state: restarted 
+
+- name: Restart Apache
+  service:
+    name: httpd
+    state: restarted
